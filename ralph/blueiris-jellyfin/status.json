@@ -49,14 +49,14 @@
       "test": "Deliverable for P0-2 is implemented and verified.",
       "failure": "Deliverable missing, does not meet the described behavior, or tests fail.",
       "deps": [],
-      "status": "in_progress",
+      "status": "reviewing",
       "assigned": "ralph-sub",
       "started_at": "2026-09-01T19:34:27.228848+00:00",
-      "submitted_at": null,
+      "submitted_at": "2026-09-01T20:22:26.071560+00:00",
       "completed_at": null,
       "votes": [],
       "human_followup": false,
-      "note": ""
+      "note": "P0-2 complete: snapshot endpoint, CameraList wrapper, UI snapshot button, controller tests; build + 8/8 xUnit pass"
     }
   ]
 }
