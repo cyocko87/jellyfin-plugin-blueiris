@@ -1,0 +1,62 @@
+{
+  "focus": "blueiris-jellyfin",
+  "tasks": [
+    {
+      "id": "P0-1",
+      "text": "scaffold and implement a Jellyfin Blue Iris plugin that locally links camera streams and clips",
+      "phase": "P0",
+      "wave": 1,
+      "verb": "implement",
+      "goal": "implement P0-1: scaffold and implement a Jellyfin Blue Iris plugin that locally links camera streams and clips",
+      "test": "Deliverable for P0-1 is implemented and verified.",
+      "failure": "Deliverable missing, does not meet the described behavior, or tests fail.",
+      "deps": [],
+      "status": "done",
+      "assigned": "ralph-sub",
+      "started_at": "2026-09-01T13:04:00+00:00",
+      "submitted_at": "2026-09-01T14:10:00+00:00",
+      "completed_at": "2026-09-01T19:00:00+00:00",
+      "votes": [
+        {
+          "voter": "reviewer-1",
+          "vote": "done",
+          "comment": "plugin builds and tests pass",
+          "at": "2026-09-01T19:00:00+00:00"
+        },
+        {
+          "voter": "reviewer-2",
+          "vote": "done",
+          "comment": "controller compiles and DI wired",
+          "at": "2026-09-01T19:00:00+00:00"
+        },
+        {
+          "voter": "reviewer-3",
+          "vote": "done",
+          "comment": "no jellyfin core changes",
+          "at": "2026-09-01T19:00:00+00:00"
+        }
+      ],
+      "human_followup": false,
+      "note": "Repo created at https://github.com/cyocko87/jellyfin-plugin-blueiris. Build passes, 6/6 tests pass, BlueIrisController enabled."
+    },
+    {
+      "id": "P0-2",
+      "text": "add bi-mcp integration to list cameras and pull a live snapshot for verification",
+      "phase": "P0",
+      "wave": 1,
+      "verb": "implement",
+      "goal": "implement P0-2: add bi-mcp integration to list cameras and pull a live snapshot for verification",
+      "test": "Deliverable for P0-2 is implemented and verified.",
+      "failure": "Deliverable missing, does not meet the described behavior, or tests fail.",
+      "deps": [],
+      "status": "in_progress",
+      "assigned": "ralph-sub",
+      "started_at": "2026-09-01T19:34:27.228848+00:00",
+      "submitted_at": null,
+      "completed_at": null,
+      "votes": [],
+      "human_followup": false,
+      "note": ""
+    }
+  ]
+}

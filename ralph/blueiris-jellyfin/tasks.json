@@ -1,0 +1,4 @@
+[
+  "implement P0-1: scaffold and implement a Jellyfin Blue Iris plugin that locally links camera streams and clips",
+  "implement P0-2: add bi-mcp integration to list cameras and pull a live snapshot for verification"
+]
