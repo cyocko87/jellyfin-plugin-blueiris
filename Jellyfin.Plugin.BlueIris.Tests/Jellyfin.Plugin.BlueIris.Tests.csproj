@@ -16,6 +16,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Jellyfin.Controller" Version="10.9.11" ExcludeAssets="compile" />
+    <PackageReference Include="Jellyfin.Model" Version="10.9.11" ExcludeAssets="compile" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Jellyfin.Plugin.BlueIris\Jellyfin.Plugin.BlueIris.csproj" />
   </ItemGroup>
 

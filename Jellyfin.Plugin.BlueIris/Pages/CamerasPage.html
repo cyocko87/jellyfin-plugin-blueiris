@@ -31,6 +31,12 @@
                 return url;
             }
 
+            function buildSnapshotUrl(camera) {
+                return (ApiClient.getUrl
+                    ? ApiClient.getUrl('BlueIris/Snapshot?camera=' + encodeURIComponent(camera))
+                    : '/BlueIris/Snapshot?camera=' + encodeURIComponent(camera));
+            }
+
             function renderCameras(config) {
                 var container = document.querySelector('#BlueIrisCameras');
                 container.innerHTML = '';
@@ -71,6 +77,37 @@
                         wrapper.appendChild(video);
                     }
 
+                    var snapshotBtn = document.createElement('button');
+                    snapshotBtn.setAttribute('is', 'emby-button');
+                    snapshotBtn.type = 'button';
+                    snapshotBtn.className = 'raised block emby-button';
+                    snapshotBtn.textContent = 'Snapshot';
+
+                    var snapshotImg = document.createElement('img');
+                    snapshotImg.alt = camera + ' snapshot';
+                    snapshotImg.style.width = '100%';
+                    snapshotImg.style.display = 'none';
+                    snapshotImg.style.marginTop = '0.5em';
+
+                    snapshotBtn.addEventListener('click', function () {
+                        fetch(buildSnapshotUrl(camera))
+                            .then(function (response) {
+                                if (!response.ok) {
+                                    throw new Error('Snapshot request failed: ' + response.status);
+                                }
+                                return response.blob();
+                            })
+                            .then(function (blob) {
+                                snapshotImg.src = URL.createObjectURL(blob);
+                                snapshotImg.style.display = 'block';
+                            })
+                            .catch(function (err) {
+                                console.error('Blue Iris snapshot failed', err);
+                            });
+                    });
+
+                    wrapper.appendChild(snapshotBtn);
+                    wrapper.appendChild(snapshotImg);
                     container.appendChild(wrapper);
                 });
             }
