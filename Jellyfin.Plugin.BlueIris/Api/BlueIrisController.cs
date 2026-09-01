@@ -1,16 +1,8 @@
-// This controller is a stub. It requires the Jellyfin.Api NuGet package (10.9.11 or later)
-// to compile. Because Jellyfin.Api is not referenced by this project, the file is excluded
-// from the build via <Compile Remove="Api\BlueIrisController.cs" /> in the .csproj.
-//
-// To enable it: add <PackageReference Include="Jellyfin.Api" Version="10.9.11" /> to the
-// main project, remove the <Compile Remove /> line, and ensure the controller is registered
-// with Jellyfin's dependency injection.
-
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Jellyfin.Api.Controllers;
 using Jellyfin.Plugin.BlueIris.BlueIris;
+using Jellyfin.Plugin.BlueIris.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,9 +11,10 @@ namespace Jellyfin.Plugin.BlueIris.Api;
 /// <summary>
 /// Exposes Blue Iris cameras and stream URLs under /BlueIris.
 /// </summary>
+[ApiController]
 [Route("BlueIris")]
 [Authorize]
-public class BlueIrisController : BaseJellyfinApiController
+public class BlueIrisController : ControllerBase
 {
     private readonly BlueIrisClient _client;
 
@@ -42,6 +35,7 @@ public class BlueIrisController : BaseJellyfinApiController
     [HttpGet("Cameras")]
     public async Task<ActionResult<IReadOnlyList<CameraInfo>>> GetCameras(CancellationToken cancellationToken = default)
     {
+        ApplyConfig();
         var cameras = await _client.GetCamerasAsync(cancellationToken).ConfigureAwait(false);
         return Ok(cameras);
     }
@@ -55,6 +49,15 @@ public class BlueIrisController : BaseJellyfinApiController
     [HttpGet("Stream")]
     public ActionResult<string> GetStream([FromQuery] string camera, [FromQuery] string type)
     {
+        ApplyConfig();
         return _client.BuildStreamUrl(camera, type);
+    }
+
+    private void ApplyConfig()
+    {
+        var config = Plugin.Instance?.Configuration ?? new PluginConfiguration();
+        _client.BaseUrl = config.ServerUrl;
+        _client.Username = config.Username;
+        _client.Password = config.Password;
     }
 }
