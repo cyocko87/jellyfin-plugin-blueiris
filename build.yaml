@@ -1,0 +1,19 @@
+---
+name: "BlueIris"
+guid: "f95d71a9-8f0e-418f-84aa-11dc2178eb5c"
+version: "0.1.0.0"
+targetAbi: "10.9.0.0"
+framework: "net8.0"
+overview: "Watch Blue Iris security cameras and clips inside Jellyfin."
+description: >
+  Jellyfin.Plugin.BlueIris links Blue Iris security cameras to Jellyfin as a
+  standalone plugin page. It reads the Blue Iris /json camlist, lets admins pick
+  allowed cameras, and renders HLS or MJPEG streams directly from the Blue Iris
+  web server.
+category: "Security"
+owner: "jellyfin-plugin-blueiris"
+artifacts:
+- "Jellyfin.Plugin.BlueIris.dll"
+changelog: >
+  Initial P0-1 release: configuration page, BlueIris client, custom cameras
+  page, xUnit tests, and a documented API controller gap.

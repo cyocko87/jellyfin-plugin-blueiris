@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Jellyfin.Plugin.BlueIris</RootNamespace>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Jellyfin.Controller" Version="10.9.11" ExcludeAssets="runtime" />
+    <PackageReference Include="Jellyfin.Model" Version="10.9.11" ExcludeAssets="runtime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Configuration\configPage.html" />
+    <EmbeddedResource Include="Configuration\configPage.html" />
+    <None Remove="Pages\CamerasPage.html" />
+    <EmbeddedResource Include="Pages\CamerasPage.html" />
+    <Compile Remove="Api\BlueIrisController.cs" />
+  </ItemGroup>
+
+</Project>

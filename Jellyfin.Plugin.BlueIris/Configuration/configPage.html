@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>BlueIris</title>
+</head>
+<body>
+    <div id="BlueIrisConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox">
+        <div data-role="content">
+            <div class="content-primary">
+                <form id="BlueIrisConfigForm">
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="ServerUrl">Blue Iris URL</label>
+                        <input id="ServerUrl" name="ServerUrl" type="text" is="emby-input" />
+                        <div class="fieldDescription">Base URL for the Blue Iris web server, e.g. http://192.168.5.5:81</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="Username">Username</label>
+                        <input id="Username" name="Username" type="text" is="emby-input" />
+                        <div class="fieldDescription">Blue Iris web user.</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="Password">Password</label>
+                        <input id="Password" name="Password" type="password" is="emby-input" />
+                        <div class="fieldDescription">Blue Iris web password.</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="AllowedCameras">Allowed Cameras</label>
+                        <textarea id="AllowedCameras" name="AllowedCameras" is="emby-textarea" rows="4"></textarea>
+                        <div class="fieldDescription">One camera short name per line or comma separated. These are the cameras shown on the Cameras page.</div>
+                    </div>
+                    <div class="selectContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="StreamType">Stream Type</label>
+                        <select id="StreamType" name="StreamType" is="emby-select">
+                            <option value="HLS">HLS</option>
+                            <option value="MJPEG">MJPEG</option>
+                        </select>
+                        <div class="fieldDescription">HLS uses the H.264 stream. MJPEG works in more browsers.</div>
+                    </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="RestrictToAdmins" name="RestrictToAdmins" type="checkbox" is="emby-checkbox" />
+                            <span>Restrict cameras page to administrators only</span>
+                        </label>
+                    </div>
+                    <div>
+                        <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                            <span>Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var BlueIrisConfig = {
+                pluginUniqueId: 'f95d71a9-8f0e-418f-84aa-11dc2178eb5c'
+            };
+
+            function parseCameras(text) {
+                return (text || '')
+                    .split(/[\n,]+/)
+                    .map(function (s) { return s.trim(); })
+                    .filter(function (s) { return s.length > 0; });
+            }
+
+            document.querySelector('#BlueIrisConfigPage')
+                .addEventListener('pageshow', function () {
+                    Dashboard.showLoadingMsg();
+                    ApiClient.getPluginConfiguration(BlueIrisConfig.pluginUniqueId).then(function (config) {
+                        document.querySelector('#ServerUrl').value = config.ServerUrl || '';
+                        document.querySelector('#Username').value = config.Username || '';
+                        document.querySelector('#Password').value = config.Password || '';
+                        document.querySelector('#AllowedCameras').value = (config.AllowedCameras || []).join('\n');
+                        document.querySelector('#StreamType').value = config.StreamType || 'HLS';
+                        document.querySelector('#RestrictToAdmins').checked = config.RestrictToAdmins || false;
+                        Dashboard.hideLoadingMsg();
+                    });
+                });
+
+            document.querySelector('#BlueIrisConfigForm')
+                .addEventListener('submit', function (e) {
+                    Dashboard.showLoadingMsg();
+                    ApiClient.getPluginConfiguration(BlueIrisConfig.pluginUniqueId).then(function (config) {
+                        config.ServerUrl = document.querySelector('#ServerUrl').value;
+                        config.Username = document.querySelector('#Username').value;
+                        config.Password = document.querySelector('#Password').value;
+                        config.AllowedCameras = parseCameras(document.querySelector('#AllowedCameras').value);
+                        config.StreamType = document.querySelector('#StreamType').value;
+                        config.RestrictToAdmins = document.querySelector('#RestrictToAdmins').checked;
+                        ApiClient.updatePluginConfiguration(BlueIrisConfig.pluginUniqueId, config).then(function (result) {
+                            Dashboard.processPluginConfigurationUpdateResult(result);
+                        });
+                    });
+
+                    e.preventDefault();
+                    return false;
+                });
+        </script>
+    </div>
+</body>
+</html>

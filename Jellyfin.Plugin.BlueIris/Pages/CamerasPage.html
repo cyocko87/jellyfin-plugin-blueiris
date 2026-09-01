@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Blue Iris Cameras</title>
+</head>
+<body>
+    <div id="BlueIrisCamerasPage" data-role="page" class="page type-interior" data-require="emby-button">
+        <div data-role="content">
+            <div class="content-primary">
+                <h2>Blue Iris Cameras</h2>
+                <p id="BlueIrisMessage" class="hide"></p>
+                <div id="BlueIrisCameras" class="itemsContainer vertical-wrap" style="display: flex; flex-wrap: wrap; gap: 1em;"></div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var BlueIrisConfig = {
+                pluginUniqueId: 'f95d71a9-8f0e-418f-84aa-11dc2178eb5c'
+            };
+
+            function buildStreamUrl(config, camera) {
+                var base = (config.ServerUrl || '').replace(/\/$/, '');
+                var type = (config.StreamType || 'HLS');
+                var path = type.toLowerCase() === 'mjpeg'
+                    ? '/mjpg/' + encodeURIComponent(camera) + '/video.mjpg'
+                    : '/h264/' + encodeURIComponent(camera) + '/temp.m3u8';
+                var url = base + path;
+                if (config.Username || config.Password) {
+                    url += '?user=' + encodeURIComponent(config.Username || '') + '&pw=' + encodeURIComponent(config.Password || '');
+                }
+                return url;
+            }
+
+            function renderCameras(config) {
+                var container = document.querySelector('#BlueIrisCameras');
+                container.innerHTML = '';
+
+                var cameras = config.AllowedCameras || [];
+                if (cameras.length === 0) {
+                    container.innerHTML = '<p>No cameras configured. Add cameras on the BlueIris configuration page.</p>';
+                    return;
+                }
+
+                var type = (config.StreamType || 'HLS').toLowerCase();
+
+                cameras.forEach(function (camera) {
+                    var wrapper = document.createElement('div');
+                    wrapper.style.flex = '1 1 320px';
+                    wrapper.style.minWidth = '320px';
+
+                    var label = document.createElement('h3');
+                    label.textContent = camera;
+                    wrapper.appendChild(label);
+
+                    var url = buildStreamUrl(config, camera);
+
+                    if (type === 'mjpeg') {
+                        var img = document.createElement('img');
+                        img.src = url;
+                        img.alt = camera;
+                        img.style.width = '100%';
+                        wrapper.appendChild(img);
+                    } else {
+                        var video = document.createElement('video');
+                        video.src = url;
+                        video.controls = true;
+                        video.autoplay = true;
+                        video.muted = true;
+                        video.playsInline = true;
+                        video.style.width = '100%';
+                        wrapper.appendChild(video);
+                    }
+
+                    container.appendChild(wrapper);
+                });
+            }
+
+            document.querySelector('#BlueIrisCamerasPage')
+                .addEventListener('pageshow', function () {
+                    Dashboard.showLoadingMsg();
+                    ApiClient.getPluginConfiguration(BlueIrisConfig.pluginUniqueId).then(function (config) {
+                        var isAdmin = Dashboard.getCurrentUser && Dashboard.getCurrentUser().IsAdmin;
+                        if (config.RestrictToAdmins && !isAdmin) {
+                            document.querySelector('#BlueIrisMessage').classList.remove('hide');
+                            document.querySelector('#BlueIrisMessage').textContent = 'This page is restricted to administrators.';
+                            document.querySelector('#BlueIrisCameras').innerHTML = '';
+                            Dashboard.hideLoadingMsg();
+                            return;
+                        }
+
+                        document.querySelector('#BlueIrisMessage').classList.add('hide');
+                        renderCameras(config);
+                        Dashboard.hideLoadingMsg();
+                    });
+                });
+        </script>
+    </div>
+</body>
+</html>
